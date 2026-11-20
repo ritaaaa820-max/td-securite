@@ -9,6 +9,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
 import { Banque, Compte, Virement } from '../../core/api/banque';
+import { AuthService } from '../../core/auth/auth.service'; // partie 3
 
 @Component({
   selector: 'app-detail-compte',
@@ -30,6 +31,7 @@ import { Banque, Compte, Virement } from '../../core/api/banque';
 })
 export class DetailCompte implements OnInit {
   private readonly banque = inject(Banque);
+  protected readonly auth = inject(AuthService); // partie 3 : pour cacher le bouton Valider
 
   /** Le `:id` de la route (withComponentInputBinding). */
   readonly id = input.required<string>();

@@ -58,8 +58,8 @@
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef><span class="cache">Actions</span></th>
               <td mat-cell *matCellDef="let v">
-                <!-- TODO partie 3 : n'afficher ce bouton qu'à un conseiller (le serveur doit aussi refuser). -->
-                @if (v.statut === 'EN_ATTENTE') {
+                <!-- Partie 3 : bouton seulement pour un conseiller (le serveur refuse aussi) -->
+                @if (v.statut === 'EN_ATTENTE' && auth.utilisateur()?.roles?.includes('CONSEILLER')) {
                   <button mat-stroked-button type="button" (click)="valider(v)">Valider</button>
                 }
               </td>

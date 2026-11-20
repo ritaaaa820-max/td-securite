@@ -26,11 +26,13 @@ public class SecuriteConfig {
         http.csrf(csrf -> csrf.disable()); // pas de session ni de cookie -> pas besoin de CSRF
         http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-       
+        // Basic Auth. On renvoie juste 401 (sans WWW-Authenticate) pour que le navigateur
+        // n'ouvre pas sa popup de connexion.
         http.httpBasic(basic -> basic.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
 
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // preflight CORS
+                .requestMatchers(HttpMethod.POST, "/api/virements/*/valider").hasRole("CONSEILLER") // partie 3
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll());
 
