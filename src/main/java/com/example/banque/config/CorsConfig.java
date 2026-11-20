@@ -1,29 +1,27 @@
 package com.example.banque.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-/**
- * Angular (localhost:4200) appelle l'API sur un autre port : le navigateur demande d'abord
- * à l'API, par un OPTIONS, si elle l'accepte. Ceci répond à Spring MVC ; une fois Spring
- * Security ajouté, sa chaîne de filtres passe avant et doit aussi laisser passer cet OPTIONS.
- */
+import java.util.List;
+
+// Autorise le front Angular (localhost:4200) à appeler l'API.
+// C'est Spring Security qui l'utilise grâce à http.cors(...).
 @Configuration
 public class CorsConfig {
 
     @Bean
-    WebMvcConfigurer corsConfigurer(@Value("${app.cors.origines}") String[] origines) {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
-                        .allowedOrigins(origines)
-                        .allowedMethods("GET", "POST", "PUT", "DELETE")
-                        .allowedHeaders("Authorization", "Content-Type");
-            }
-        };
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:4200"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/api/**", config);
+        return source;
     }
 }
